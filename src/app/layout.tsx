@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/ui/sidebar/Sidebar";
+import { Session } from "next-auth";
+import Providers from "./pages/emails/providers";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Poppins({ subsets: ['latin'] , weight: '400' });
 
@@ -12,16 +15,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  session
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode;  
+  session: Session
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} flex justify-between items-start`}>
-        <Sidebar />
-        <main className="w-full h-full">
-          {children}
-        </main>
+      <body className={`${inter.className}`}>
+        <Providers>   
+          <main>
+            {children}
+          </main>
+        </Providers>  
+        <ToastContainer />
       </body>
     </html>
   );
