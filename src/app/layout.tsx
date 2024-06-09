@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { Session } from "next-auth";
 import Providers from "./pages/emails/providers";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,10 +14,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  session
 }: Readonly<{
   children: React.ReactNode;  
-  session: Session
 }>) {
   return (
     <html lang="en">
