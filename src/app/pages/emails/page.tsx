@@ -7,6 +7,7 @@ import EmailActions from "@/components/ui/EmailActions/EmailActions";
 import EmailList from "@/components/ui/EmailList/EmailList";
 import SpinningLoader from "@/components/ui/SpinningLoader/SpinningLoader";
 import { redirect } from "next/navigation";
+import { toast } from "react-toastify";
 
 const PROMPT = `
  The rules of the labels were also added in the promt; you can find that inside the <rules> tag. Take the array of objects inside the codePrefix tag, go through its object, read the "snippet" property, and assign the label like promotions, spam, and general based on the snippets content. Please be aware that your output will simply be an array; no explanation language is required. For instance, if the array has two elements, the resultant array will always consist of two arrays plus an additional property categorization. and each time you generate, the result's format needs to be the same.Do NOT preface your answer or write anything other than array. Please note the the result must be an json array like in the output tag. Do not modify the input the generated output will be the array inside the prefix array with additional classification property.
@@ -42,11 +43,11 @@ snippet: "Hello Nithish, Below are the interesting opportunities based on your p
 ]
 </output>
 `;
-const page = () => {
+const Page = () => {
   const [emails, setEmails] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [numberOfEmails, setNumberOfEmails] = useState<number>(5);
-  const { data: session } = useSession({
+  const { data: session }: any = useSession({
     required: true,
     onUnauthenticated() {
       redirect("/");
@@ -88,7 +89,7 @@ const page = () => {
         });
         setEmails(emailData);
         setLoading(false);
-      } catch (err) {
+      } catch (err: any) {
         console.log("Error Fetcing Enails", err?.message);
         setLoading(false);
       }
@@ -115,13 +116,18 @@ const page = () => {
           redirect: "follow",
         });
         const res = await response.json();
-        let parseValue = JSON.parse(res.data);
-        setEmails(parseValue);
-        setLoading(false);
+        if(res.status === 200){
+          let parseValue = JSON.parse(res.data);
+          setEmails(parseValue);
+          setLoading(false);
+        }else{
+          setLoading(false);
+          toast.error(res.message);
+        }
       }
-    } catch (err) {
+    } catch (err: any) {
       setLoading(false);
-      console.log("Error Fetching Openi", err?.message);
+      toast.error(err.message);
     }
   };
 
@@ -139,7 +145,6 @@ const page = () => {
           <div>
             <EmailActions
               handleClassify={handleClassify}
-              numberOfEmails={numberOfEmails}
               setNumberOfEmails={setNumberOfEmails}
             />
           </div>
@@ -158,4 +163,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

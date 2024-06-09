@@ -24,19 +24,19 @@ const EmailList = ({ subject, mailContent, label }: EmailListPropType) => {
         <DrawerTrigger>
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 cursor-pointer">
             <div className="flex justify-between">
-              <p className="w-[250px] truncate">{subject}</p>
+              <p className="w-[250px] truncate text-left">{subject}</p>
               {label && (
                 <p className={`text-sm ${LabelColors[label]}`}>{label}</p>
               )}
             </div>
-            <p className="mt-4 text-left truncate-multiline">{mailContent}</p>
+            <p className="mt-4 text-left line-clamp-2">{mailContent}</p>
           </div>
         </DrawerTrigger>
         <ChatDrawer
           mailSubject={subject}
           mailContent={mailContent}
           label={label}
-          labelColor={LabelColors[label]}
+          labelColor={label ? LabelColors[label] : ""}
         />
       </Drawer>
     </div>

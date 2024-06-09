@@ -1,11 +1,15 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
+if (!process.env.GOOGLE_ID || !process.env.GOOGLE_SECRET) {
+  throw new Error("Missing Google OAuth environment variables: GOOGLE_ID and GOOGLE_SECRET");
+}
+
 const handler: any = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID || "dgjh",
-      clientSecret: process.env.GOOGLE_SECRET || "dgh",
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
       authorization: {
         params: {
           scope: 'openid profile email https://www.googleapis.com/auth/gmail.readonly',

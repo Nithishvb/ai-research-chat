@@ -1,14 +1,12 @@
 import React from "react";
 
 type EmailActionsPropTypes = {
-  numberOfEmails: string;
   setNumberOfEmails: (val: any) => void;
   handleClassify: (val: any) => void;
 };
 
 const EmailActions = ({
   handleClassify,
-  numberOfEmails,
   setNumberOfEmails,
 }: EmailActionsPropTypes) => {
   return (

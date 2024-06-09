@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const gmail = google.gmail({ version: "v1", auth: oauth2Client });
 
     // Fetch the list of messages
-    const response = await gmail.users.messages.list({
+    const response : any = await gmail.users.messages.list({
       userId: "me",
       maxResults: parseInt(emailToFetch),
     });
@@ -31,12 +31,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
     // Fetch the details of each message
     const messages = await Promise.all(
       response?.data?.messages.map(async (message: any) => {
-        const msg = await gmail.users.messages.get({
+        const msg: any = await gmail.users.messages.get({
           userId: "me",
           id: message.id,
         });
         const headers = msg.data.payload?.headers;
-        const subjectHeader = headers?.find(header => header.name === 'Subject');
+        const subjectHeader = headers?.find((header: any) => header.name === 'Subject');
         const subject = subjectHeader?.value;
         msg.data.subject = subject;
         return msg.data;
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       }),
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     return new NextResponse(
       JSON.stringify({
         status: 500,
