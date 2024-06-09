@@ -1,60 +1,80 @@
-
-import { NextRequest } from 'next/server';
-import OpenAI from 'openai';
+import { NextRequest } from "next/server";
+import OpenAI from "openai";
 
 export async function POST(req: NextRequest) {
-
-  try{
+  try {
     const body = await req.json();
 
-    if(body.apiKey == null || body.apiKey == undefined || body.apiKey.trim() == "" ){
+    if (
+      body.apiKey == null ||
+      body.apiKey == undefined ||
+      body.apiKey.trim() == ""
+    ) {
       return new Response(
         JSON.stringify({
           status: 401,
           message: "Please Provide OpenAI KEY",
-        })
-        ,{ status: 401 }
+        }),
+        { status: 401 }
       );
     }
 
     const openai = new OpenAI({
-      apiKey: body.apiKey, 
+      apiKey: body.apiKey,
     });
 
     const chatCompletion = await openai.chat.completions.create({
-      messages: [{ role: 'user', content: body.prompt }],
-      model: 'gpt-4o',
+      messages: [{ role: "user", content: body.prompt }],
+      model: "gpt-4o",
     });
 
     let response = null;
 
     console.log("Chat content", chatCompletion.choices[0].message.content);
 
-    if(chatCompletion.choices[0].message.content?.includes('json')){
-      response = JSON.parse(chatCompletion.choices[0].message.content.replace(/```json/g, '').replace(/```/g, ''));
-    }else{
-      if(chatCompletion.choices[0].message.content){
-        response = JSON.parse(chatCompletion.choices[0].message.content.replace(/``/g, ''));
+    try {
+      if (chatCompletion.choices[0].message.content?.includes("json")) {
+        response = JSON.parse(
+          chatCompletion.choices[0].message.content
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
+        );
+      } else {
+        if (chatCompletion.choices[0].message.content) {
+          response = JSON.parse(
+            chatCompletion.choices[0].message.content.replace(/``/g, "")
+          );
+        }
       }
+    } catch (parseError: any) {
+      console.error("Parsing error", parseError);
+      return new Response(
+        JSON.stringify({
+          status: 500,
+          message: "Error parsing the response from OpenAI",
+          data: chatCompletion.choices[0].message.content
+        }),
+        { status: 500 }
+      );
     }
 
     return new Response(
       JSON.stringify({
         status: 200,
         message: "Data fetched successfully",
-        data: JSON.stringify(response)
+        data: JSON.stringify(response),
       })
     );
-  }catch(err: any){
-    console.log("fetching error",err);
-    
+  } catch (err: any) {
+    console.log("fetching error", err);
+
     return new Response(
       JSON.stringify({
         status: 401,
-        message: err.code === 'invalid_api_key' ? "Invalid Api Key" : err.message,
-      })
-      ,{ status: 401 }
+        message:
+          err.code === "invalid_api_key" ? "Invalid Api Key" : err.message,
+      }),
+      { status: 401 }
     );
-  } 
-  
+  }
 }
