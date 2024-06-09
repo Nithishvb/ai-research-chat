@@ -72,7 +72,7 @@ const Page = () => {
   }, [emails]);
 
   const fetchEmails = useCallback(
-    async (token: string , emailToFetch: number) => {
+    async (token: string, emailToFetch: number) => {
       try {
         setLoading(true);
         const response = await fetch(
@@ -84,7 +84,7 @@ const Page = () => {
           emailData.push({
             id: e.historyId,
             snippet: e.snippet,
-            subject: e.subject
+            subject: e.subject,
           });
         });
         setEmails(emailData);
@@ -110,17 +110,17 @@ const Page = () => {
         const response = await fetch("/api/chat", {
           method: "POST",
           body: JSON.stringify({
-            apiKey: localStorage.getItem('API_KEY'),
+            apiKey: localStorage.getItem("API_KEY"),
             prompt: prompt,
           }),
           redirect: "follow",
         });
         const res = await response.json();
-        if(res.status === 200){
+        if (res.status === 200) {
           let parseValue = JSON.parse(res.data);
           setEmails(parseValue);
           setLoading(false);
-        }else{
+        } else {
           setLoading(false);
           toast.error(res.message);
         }

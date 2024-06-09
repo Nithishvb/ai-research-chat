@@ -30,32 +30,18 @@ export async function POST(req: NextRequest) {
 
     let response = null;
 
-    console.log("Chat content", chatCompletion.choices[0].message.content);
-
-    try {
-      if (chatCompletion.choices[0].message.content?.includes("json")) {
-        response = JSON.parse(
-          chatCompletion.choices[0].message.content
-            .replace(/```json/g, "")
-            .replace(/```/g, "")
-        );
-      } else {
-        if (chatCompletion.choices[0].message.content) {
-          response = JSON.parse(
-            chatCompletion.choices[0].message.content.replace(/``/g, "")
-          );
-        }
-      }
-    } catch (parseError: any) {
-      console.error("Parsing error", parseError);
-      return new Response(
-        JSON.stringify({
-          status: 500,
-          message: "Error parsing the response from OpenAI",
-          data: chatCompletion.choices[0].message.content
-        }),
-        { status: 500 }
+    if (chatCompletion.choices[0].message.content?.includes("json")) {
+      response = JSON.parse(
+        chatCompletion.choices[0].message.content
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
       );
+    } else {
+      if (chatCompletion.choices[0].message.content) {
+        response = JSON.parse(
+          chatCompletion.choices[0].message.content.replace(/``/g, "")
+        );
+      }
     }
 
     return new Response(
@@ -66,8 +52,6 @@ export async function POST(req: NextRequest) {
       })
     );
   } catch (err: any) {
-    console.log("fetching error", err);
-
     return new Response(
       JSON.stringify({
         status: 401,
