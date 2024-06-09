@@ -28,6 +28,8 @@ export async function POST(req: NextRequest) {
 
     let response = null;
 
+    console.log("Chat content", chatCompletion.choices[0].message.content);
+
     if(chatCompletion.choices[0].message.content?.includes('json')){
       response = JSON.parse(chatCompletion.choices[0].message.content.replace(/```json/g, '').replace(/```/g, ''));
     }else{

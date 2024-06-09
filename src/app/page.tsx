@@ -11,7 +11,7 @@ export default function Home() {
   const handleSignIn = () => {
     if(isOpenAiKeyPresent()){
       signIn("google", {
-        callbackUrl: "https://full-stack-assignment-nnjx.vercel.app/pages/emails",
+        callbackUrl: `${process.env.NEXT_BASE_URL}/pages/emails`,
       })
     }else{
       toast.error("Please enter the OpenAI API key before logging in.")
